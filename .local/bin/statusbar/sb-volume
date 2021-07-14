@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# Uses Sauce code pro nerd font
+
+case $BLOCK_BUTTON in
+	1) setsid -f "$TERMINAL" -e pulsemixer ;;
+	2) pamixer -t ;;
+	4) pamixer --allow-boost -i 1 ;;
+	5) pamixer --allow-boost -d 1 ;;
+	3) notify-send "Volume module" "\- Shows volume  , 婢 if muted.
+- Middle click to mute.
+- Scroll to change." ;;
+	6) "$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
+
+[ $(pamixer --get-mute) = true ] && echo 婢 && exit
+
+vol="$(pamixer --get-volume)"
+
+if [ "$vol" -gt "70" ]; then
+	icon=" "
+elif [ "$vol" -lt "30" ]; then
+	icon="奔"
+else
+	icon="墳 "
+fi
+
+printf ^c#93c9ff^
+echo "$icon$vol%"
