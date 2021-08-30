@@ -14,7 +14,7 @@ disabled = false
 show_always = true
 
 [cmd_duration]
-min_time = 500
+min_time = 1000
 format = "underwent [$duration](bold yellow)"
 
 [directory]
