@@ -1,0 +1,21 @@
+configuration {
+  modi: "window,run";
+	font: "SauceCodePro Nerd Font 12";
+	show-icons: false;
+  sidebar-mode: false;
+  case-sensitive: false;
+  timeout {
+      action: "kb-cancel";
+      delay:  5;
+  }
+  filebrowser {
+      directories-first: true;
+      sorting-method:    "name";
+  }
+  drun {
+    parse-user:   true;
+    parse-system: false;
+  }
+}
+
+@import "~/.cache/wal/colors-rofi-dark.rasi"

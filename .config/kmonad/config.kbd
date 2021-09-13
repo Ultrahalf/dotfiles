@@ -1,21 +1,21 @@
 (defcfg
-  ;; For Linux
-  input  (device-file "/dev/input/by-id/usb-SIGMACHIP_USB_Keyboard-event-kbd")
-  ;; input  (device-file "/dev/input/by-path/platform-i8042-serio-0-event-kbd")
-  output (uinput-sink "My KMonad output" "sleep 2; xset r rate 300 50")
-  fallthrough true
-  allow-cmd true
-)
+ ;; For Linux
+ input (device-file "/dev/input/by-id/usb-SIGMACHIP_USB_Keyboard-event-kbd")
+ ;; input (device-file "/dev/input/by-path/platform-i8042-serio-0-event-kbd")
+ output (uinput-sink "My KMonad output" "sleep 2; xset r rate 300 50")
+ fallthrough true
+ allow-cmd true
+ )
 
 #| TEMPLATE
 (
  _
- _  _  _    _    _    _    _    _    _    _    _    _    _    _
- _  _  _    _    _    _    _    _    _    _    _    _    _    _
- _  _  _    _    _    _    _    _    _    _    _    _    _
- _  _  _    _    _    _    _    _    _    _    _    _
- _  _  _           _            _    _    _    _
-)
+ _ _  _  _  _  _  _  _  _  _  _  _  _  _
+ _ _  _  _  _  _  _  _  _  _  _  _  _  _
+ _ _  _  _  _  _  _  _  _  _  _  _  _
+ _ _  _  _  _  _  _  _  _  _  _  _
+ _ _  _      _      _  _  _  _
+ )
 |#
 
 (defsrc
@@ -29,154 +29,147 @@
 
 
 (defalias 
-  ;; HOMEROW MODS
-  A_a (tap-hold-next-release 200 a lalt)
-  M_r (tap-hold-next-release 200 r lmet)
-  C_s (tap-hold-next-release 200 s lctl)
-  S_t (tap-hold-next-release 200 t lsft)
-  S_n (tap-hold-next-release 200 n rsft)
-  C_e (tap-hold-next-release 200 e rctl)
-  M_i (tap-hold-next-release 200 i rmet)
-  A_o (tap-hold-next-release 200 o ralt)
+ ;; HOMEROW MODS
+ A_a (tap-hold-next-release 250 a lalt)
+ M_r (tap-hold-next-release 250 r lmet)
+ C_s (tap-hold-next-release 250 s lctl)
+ S_t (tap-hold-next-release 250 t lsft)
+ S_n (tap-hold-next-release 250 n rsft)
+ C_e (tap-hold-next-release 250 e rctl)
+ M_i (tap-hold-next-release 250 i rmet)
+ A_o (tap-hold-next-release 250 o ralt)
 
-  ;; SPACE CADET
-  lst (tap-hold-next-release 200 [ lsft)
-  rst (tap-hold-next-release 200 ] rsft)
-  Meh (tap-hold-next-release 200 tab C-A-S)
+ ;; SPACE CADET
+ lst (tap-next [ lsft)
+ rst (tap-next ] rsft)
 
-  ;; VI-like-mode-aliases 
-  b C-lft
-  w C-rght
-	vb (around rctl S-lft)
-	vw (around rctl S-rght)
-	vlf S-lft
-	vrg S-rght
-	vup S-up
-	vdo S-down
-	vho S-home
-	ven S-end
+ ;; VI-like-mode-aliases 
+ b C-lft
+ w C-rght
+ vb (around rctl S-lft)
+ vw (around rctl S-rght)
+ vlf S-lft
+vrg S-rght
+vup S-up
+vdo S-down
+vho S-home
+ven S-end
 
-  ;; MOUSE KEYS
-  mtog #((cmd-button "setxkbmap -option keypad:pointerkeys && notify-send \"KMonad\" \"mouse toggled\" ") P1000 S-nlck)
-  mml kp4
-  mmd kp2
-  mmu kp8
-  mmr kp6
-  mwl (cmd-button "xdotool click 6")
-  mwd (cmd-button "xdotool click 5")
-  mwu (cmd-button "xdotool click 4")
-  mwr (cmd-button "xdotool click 7")
-  mb1 #(kp/ kp5)
-  mb2 #(kp- kp5)
-  mb3 #(kp* kp5)
-  
-  ;; AUDIO
-  next nextsong
-  prev previoussong
-  pp playpause
-  stop stopcd
+;; AUDIO
+next nextsong
+prev previoussong
+pp playpause
+stop stopcd
 
   ;; LAYER 
-  h (tap-hold 200 h (layer-toggle num))
-  k (tap-hold 200 k (layer-toggle sym))
-  c (tap-hold 200 c (layer-toggle nav))
-  esc (tap-hold 200 esc (layer-toggle wm))
+  spc (tap-next spc (layer-toggle num))
+  esc (tap-next esc (layer-toggle nav))
   v (layer-add sel)
-	ves (layer-rem sel)
+ves (layer-rem sel)
+  aqt (layer-add qwerty) ;; add qwerty
+  rqt (around (cmd-button "notify-send \"KMonad\" \"Colemak-dh toggled\"") (layer-rem qwerty)) ;; remove qwerty
+  Meh (tap-next tab C-A-S)
+tab (tap-next tab (layer-toggle wm))
+
+  qt (multi-tap 200 esc 200 caps (around (cmd-button "notify-send \"KMonad\" \"Qwerty toggled\"") @aqt))
 
   ;; SHORTCUTS
   ; (tap-hold 200 ; :)
-  = (tap-hold 200 = +)
-  ` (tap-hold 200 ` ~)
-  \\ (tap-hold 200 \\ |)
-  - (tap-hold 200 - \_)
-  1 (tap-hold 200 1 !)
-  2 (tap-hold 200 2 @)
-  3 (tap-hold 200 3 #)
-  4 (tap-hold 200 4 $)
-  5 (tap-hold 200 5 %)
-  6 (tap-hold 200 6 ^)
-  7 (tap-hold 200 7 &)
-  8 (tap-hold 200 8 *)
-  9 (tap-hold 200 9 \()
-  0 (tap-hold 200 0 \))
+  = (tap-hold 250 = +)
+  ` (tap-hold 250 ` ~)
+  \\ (tap-hold 250 \\ |)
+  - (tap-hold 250 - \_)
+  1 (tap-hold 250 1 !)
+  2 (tap-hold 250 2 @)
+  3 (tap-hold 250 3 #)
+  4 (tap-hold 250 4 $)
+  5 (tap-hold 250 5 %)
+  6 (tap-hold 250 6 ^)
+  7 (tap-hold 250 7 &)
+  8 (tap-hold 250 8 *)
+  9 (tap-hold 250 9 \()
+0 (tap-hold 250 0 \))
 
   ;; FUNCTION KEYS + WM
-  f1 (tap-hold 200 f1 M-f1)
-  f2 (tap-hold 200 f2 M-f2)
-  f3 (tap-hold 200 f3 M-f3)
-  f4 (tap-hold 200 f4 M-f4)
-  f5 (tap-hold 200 f5 M-f5)
-  f6 (tap-hold 200 f6 M-f6)
-  f7 (tap-hold 200 f7 M-f7)
-  f8 (tap-hold 200 f8 M-f8)
-  f9 (tap-hold 200 f9 M-f9)
-  f10 (tap-hold 200 f10 M-f10)
-  f11 (tap-hold 200 f11 M-f11)
-  f12 (tap-hold 200 f12 M-f12)
+  f1 (tap-hold 250 f1 M-f1)
+  f2 (tap-hold 250 f2 M-f2)
+  f3 (tap-hold 250 f3 M-f3)
+  f4 (tap-hold 250 f4 M-f4)
+  f5 (tap-hold 250 f5 M-f5)
+  f6 (tap-hold 250 f6 M-f6)
+  f7 (tap-hold 250 f7 M-f7)
+  f8 (tap-hold 250 f8 M-f8)
+  f9 (tap-hold 250 f9 M-f9)
+  f10 (tap-hold 250 f10 M-f10)
+  f11 (tap-hold 250 f11 M-f11)
+  f12 (tap-hold 250 f12 M-f12)
 
   m0 M-0
-  m1 (tap-hold 200 M-1 M-S-1) 
-  m2 (tap-hold 200 M-2 M-S-2)
-  m3 (tap-hold 200 M-3 M-S-3)
-  m4 (tap-hold 200 M-4 M-S-4)
-  m5 (tap-hold 200 M-5 M-S-5)
-  m6 (tap-hold 200 M-6 M-S-6)
-  m7 (tap-hold 200 M-7 M-S-7)
-  m8 (tap-hold 200 M-8 M-S-8)
-  m9 (tap-hold 200 M-9 M-S-9)
- )
+  m1 (tap-hold 250 M-1 M-S-1) 
+  m2 (tap-hold 250 M-2 M-S-2)
+  m3 (tap-hold 250 M-3 M-S-3)
+  m4 (tap-hold 250 M-4 M-S-4)
+  m5 (tap-hold 250 M-5 M-S-5)
+  m6 (tap-hold 250 M-6 M-S-6)
+  m7 (tap-hold 250 M-7 M-S-7)
+  m8 (tap-hold 250 M-8 M-S-8)
+m9 (tap-hold 250 M-9 M-S-9)
+  )
 
-(deflayer colemakdh
- esc
- @`   @1   @2   @3   @4   @5   @6  @7   @8   @9   @0   @-   @=  bspc
- tab  q    w    f    p    b    j   l    u    y    @;   [    ]   @\\
- @esc @A_a @M_r @C_s @S_t g    m   @S_n @C_e @M_i @A_o '    ret
- @lst z    x    @c   d    v    @k  @h    ,    .    /    @rst
- lctl lmet tab            spc            ralt rmet cmp  rctl
- )
+  (deflayer colemakdh
+   @qt
+   @`   @1   @2   @3   @4   @5   @6  @7   @8   @9   @0   @-   @=  bspc
+   @Meh q    w    f    p    b    j   l    u    y    @;   [    ]   @\\
+   @esc @A_a @M_r @C_s @S_t g    m   @S_n @C_e @M_i @A_o '    ret
+   @lst z    x    c   d    v    k  h    ,    .    /    @rst
+   lctl lmet @tab            @spc            ralt rmet cmp  rctl
+  )
 
-(deflayer num
- _
- _  _   _     _     _     _     _  _  _  _  _  _  _  _
- _  @`  @7    @8    @9    _     _  _  _  _  _  _  _  _
- _  @=  @4    @5    @6    @0    _  _  _  _  _  _  _
- _  @-  @1    @2    @3    \\    _  _  _  _  _  _
- _  _   _                 _           _  _  _  _
-)
+  (deflayer nav
+   _
+   _  _   _   _    _    _     _	  _    _     _      _     _  _  _
+   _  _  @w   _    _    @b    caps  end  home  _  prnt  _  _  _
+   _  _  del  bspc _    _    left   down up    rght   _     _  _
+   _  _  _    _    _    v	   _   _ _  _   _     _
+   _  _  _              _                _	 _		_     _
+  )
 
-(deflayer sym
- _
- _  _   _    _    _    _     _  _  _  _   _  _  _  _
- _  grv &    *    \(   _     _  _  _  _   _  _  _  _
- _  +   $    %    ^    \)    _  _  _  _   _  _  _
- _  \_  !    @    #    |     _  _  _  _   _  _
- _  _   _              _           _  _   _  _
-)
+  ;; num
+  (deflayer num
+   _
+   _  _   _     _     _     _     _  _  _  _  _  _  _  _
+   _  @`  @7    @8    @9    _     _  _  _  _  _  _  _  _
+   _  @=  @4    @5    @6    @0    _  _  _  _  _  _  _
+   _  @-  @1    @2    @3    @\\   _  _  _  _  _  _
+   _  _   _           _			   _  _  _  _
+  )
 
-(deflayer nav
- _
- _  _  _  _  _  _    _     _     _    _     _    _  _  _
- _  _  @w _  _  @b   caps  end   home @mtog prnt _  _  _
- _  _  _  _  _  _    left  down  up   rght  _    _  _
- _  _  _  _  _  @v   @mwl  @mwd  @mwu @mwr  _    _
- _  _  _        _                _    _     _    _
-)
+  ;; vi like selection 
+  (deflayer sel
+   _
+   _  _  _    _    _    _    _    _    _    _    _    _    _    _
+   _  _  @vw  _    _    @vb  _    @ven @vho _    _    _    _    _
+   _  _  _    _    _    _    @vlf @vdo @vup @vrg _    _    _
+   _  _  _    _    _    _    _    _    _    _    @ves _
+   _  _  _           _            _    _    _    _
+  )
 
-(deflayer wm
- _
- _  _    _    _    _       _      _  _  _  _  _  _  _  _
- _  @m7  @m8  @m9  volu    brup   _  _  _  _  _  _  _  _
- _  @m4  @m5  @m6  vold    brdn   _  @pp  _  _  _  _  _
- _  @m1  @m2  @m3  @prev   @next  _  _  _  _  _  _
- _  _  _           _                    _  _  _  _
- )
+  ;; window manager
+  (deflayer wm
+   _
+   _  @f1  @f2  @f3  @f4     @f5    @f6  @f7  @f8  @f9  @f10  @f11  @f12 _
+   _  @m7  @m8  @m9  volu    brup   _	   _    _    _    _     _     _    _
+   _  @m4  @m5  @m6  vold    brdn   _    @pp  _    _    _     _	  _
+   _  @m1  @m2  @m3  @prev   @next  _	   _    _    _    _     _
+   _  _    _                 _                _    _    _     _
+  )
 
-(deflayer sel
- _
- _  _  _    _    _    _    _    _    _    _    _    _    _    _
- _  _  @vw  _    _    @vb  _    @ven @vho _    _    _    _    _
- _  _  _    _    _    _    @vlf @vdo @vup @vrg _    _    _
- _  _  _    _    _    @ves _    _    _    _    _    _
- _  _  _           _            _    _    _    _
-)
+  ;; Just in case someone wants to use my kb
+  (deflayer qwerty
+   @rqt
+   `   1   2   3   4   5   6  7   8   9   0   -   =  bspc
+   tab  q    w    e    r    t    y    u    i    o    p    [    ] @\\
+   caps a    s    d    f    g    h    j    k    l    @;    '    ret
+   lsft z    x    c    v    b    n    m    ,    .    /    rsft
+   lctl lmet lalt           spc            ralt rmet cmp  rctl
+  )

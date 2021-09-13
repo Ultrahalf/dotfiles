@@ -1,0 +1,65 @@
+ncmpcpp_directory = ~/.config/ncmpcpp
+lyrics_directory = ~/.local/share/lyrics
+mpd_host = localhost
+mpd_port = 6600
+mpd_music_dir = ~/Music
+execute_on_song_change="~/.config/ncmpcpp/ncmpcpp_cover_art.sh"
+progressbar_look = "─⊙┄"
+progressbar_elapsed_color = cyan
+progressbar_color = white
+connected_message_on_startup = no
+song_list_format = "$6{%a »$4 %t $/r$/u$R$b$1%l$/b  }|{%f$/r}"
+now_playing_prefix = "$b$6 »» "
+now_playing_suffix = "$/b"
+playlist_display_mode = "columns"
+song_columns_list_format = "(25)[6]{a} (35)[4]{t} (5)[2]{l}"
+
+
+#### Colors
+header_window_color = yellow
+main_window_color =  green
+alternative_ui_separator_color = "red"
+
+#### General formatting
+titles_visibility = "no"
+header_visibility = "no"
+statusbar_visibility = "no"
+alternative_header_first_line_format = $6$b» {%t} «$/b
+user_interface = alternative
+current_item_prefix = $(16)$r
+current_item_suffix = $/r$(end)
+
+
+#### Misc stuff
+discard_colors_if_item_is_selected = "yes"
+autocenter_mode = "yes"
+centered_cursor = "yes"
+mouse_support = "yes"
+colors_enabled = "yes"
+mpd_crossfade_time = "0"
+follow_now_playing_lyrics = "yes"
+store_lyrics_in_song_dir = "yes"
+song_window_title_format = ncmpcpp
+ask_before_clearing_playlists = "no"
+volume_change_step = "1"
+
+#### Visualizer stuff
+visualizer_type = spectrum
+## Available values: spectrum, wave, wave_filled, ellipse.
+visualizer_spectrum_smooth_look = yes
+visualizer_look = ■■
+visualizer_data_source = "localhost:5555"
+visualizer_output_name = "my_fifo"
+visualizer_in_stereo = "yes"
+visualizer_color = blue, cyan, green, yellow, magenta, red
+
+startup_screen = visualizer
+startup_slave_screen_focus = yes
+startup_slave_screen = playlist
+
+locked_screen_width_part = 30
+
+active_window_border = blue
+
+browser_display_mode = columns
+volume_color = "cyan"

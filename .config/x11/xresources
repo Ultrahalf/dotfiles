@@ -1,0 +1,7 @@
+#include "/home/ultrahalf/.cache/wal/colors-dwm.h"
+
+!! Transparency (0-1):
+*.alpha: 0.9
+
+!! Set a default font and font size as below:
+!! *.font: SauceCodePro Nerd Font:pixelsize=14

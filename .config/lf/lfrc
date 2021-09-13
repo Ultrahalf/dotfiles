@@ -1,0 +1,195 @@
+# settings
+set shell sh
+set shellopts '-eu'
+set ifs "\n"
+set scrolloff 10
+map <enter> shell
+set icons true
+set ignorecase true
+set preview true
+set previewer lf-previewer
+set cleaner lf-cleaner
+
+# bulk rename
+cmd bulk-rename ${{
+    old="$(mktemp)"
+    new="$(mktemp)"
+    [ -n "$fs" ] && fs="$(ls)"
+    printf '%s\n' "$fs" >"$old"
+    printf '%s\n' "$fs" >"$new"
+    $EDITOR "$new"
+    [ "$(wc -l < "$new")" -ne "$(wc -l < "$old")" ] && exit
+    paste "$old" "$new" | while IFS= read -r names; do
+        src="$(printf '%s' "$names" | cut -f1)"
+        dst="$(printf '%s' "$names" | cut -f2)"
+        if [ "$src" = "$dst" ] || [ -e "$dst" ]; then
+            continue
+        fi
+        mv -- "$src" "$dst"
+    done
+    rm -- "$old" "$new"
+    lf -remote "send $id unselect"
+}}
+
+cmd newfold ${{
+    set -f
+    read newd
+    mkdir -- "$newd"
+    mv -- $fx "$newd"
+}}
+
+cmd select-files ${{
+    { echo "$fs"; find -L "$(pwd)" -mindepth 1 -maxdepth 1 -type f; } |
+        if [ "$lf_hidden" = "false" ]; then
+          # remove any hidden files so you only select files you can see.
+          grep -v '/\.[^/]\+$'
+        else
+          cat
+        fi |
+        sed '/^$/d' | sort | uniq -u |
+        xargs -d '\n' -r -I{} lf -remote "send $id toggle {}"
+}}
+
+cmd select-dirs ${{
+    { echo "$fs"; find -L "$(pwd)" -mindepth 1 -maxdepth 1 -type d; } |
+        if [ "$lf_hidden" = "false" ]; then
+          grep -v '/\.[^/]\+$'
+        else
+          cat
+        fi |
+        sed '/^$/d' | sort | uniq -u |
+        xargs -d '\n' -r -I{} lf -remote "send $id toggle {}"
+}}
+
+cmd quitcd ${{
+	echo "1" > "$LF_TEMPDIR"/cdtolastdir
+	lf -remote "send $id quit"
+}}
+
+# Custom Functions
+cmd open ${{
+    case $(file --mime-type "$f" -bL) in
+        text/*|application/json) $EDITOR "$f";;
+        *) xdg-open "$f" ;;
+    esac
+}}
+
+cmd mkdir ${{
+  printf "Directory Name: "
+  read ans
+  mkdir $ans
+}}
+
+cmd mkfile ${{
+  printf "File Name: "
+  read ans
+  $EDITOR $ans
+}}
+
+cmd setwallpaper %setbg "$f"
+
+cmd dragon %dragon-drag-and-drop -a -x $fx
+cmd dragon-stay %dragon-drag-and-drop -a $fx
+cmd dragon-individual %dragon-drag-and-drop $fx
+
+# Archive bindings
+cmd unarchive ${{
+  case "$f" in
+      *.zip) unzip "$f" ;;
+      *.tar.gz) tar -xzvf "$f" ;;
+      *.tar.bz2) tar -xjvf "$f" ;;
+      *.tar) tar -xvf "$f" ;;
+      *) echo "Unsupported format" ;;
+  esac
+}}
+
+cmd zip %zip -r "$f" "$f"
+cmd tar %tar cvf "$f.tar" "$f"
+cmd targz %tar cvzf "$f.tar.gz" "$f"
+cmd tarbz2 %tar cjvf "$f.tar.bz2" "$f"
+
+cmd stripspace %stripspace "$f"
+
+# Bindings
+
+# Remove some defaults
+map m
+map o
+map n
+map "'"
+map '"'
+map d
+map c
+map e
+map f
+map r
+
+# File Openers
+map ee $$EDITOR "$f"
+map u $view "$f"
+
+# Archive Mappings
+map az zip
+map at tar
+map ag targz
+map ab targz
+map au unarchive
+
+# Dragon Mapping
+map dr dragon
+map ds dragon-stay
+map di dragon-individual
+
+# Basic Functions
+map . set hidden!
+map dd delete
+map p paste
+map x cut
+map y copy
+map <enter> open
+map mf mkfile
+map md mkdir
+map bw setwallpaper
+map R reload
+map C clear
+map u unselect
+map ss stripspace
+map <c-a> bulk-rename
+#New folder with selected item
+map <a-n> newfold
+map sd select-dirs
+map sf select-files
+map q quit
+map Q quitcd
+
+# renaming specific
+map ciw push A<a-b><a-b><a-f> # before extension
+map a push A<a-b> # after extension
+map A rename # at the very end
+map r push A<c-u> # new rename
+map i push A<c-a> # at the very beginning
+
+# fzf
+map fzf ${{
+	res="$(find . -maxdepth 3 | fzf --header='Jump to:')"
+	if [ -f "$res" ]; then
+		cmd="select"
+	elif [ -d "$res" ]; then
+		cmd="cd"
+	fi
+lf -remote "send $id $cmd \"$res\""
+}}
+
+# Movement
+map gj cd ~/Projects
+map gv cd ~/Videos
+map gp cd ~/Pictures
+map gw cd ~/Pictures/wallpapers
+map gs cd ~/Pictures/screenshots
+map gd cd ~/Downloads
+map gdd cd ~/Documents
+map gm cd ~/Music
+map sc cd ~/.local/bin
+map dt cd ~/.local/share
+map src cd ~/.local/src
+map cf cd ~/.config/
