@@ -1,0 +1,9 @@
+normal_beginning: S-i
+normal_size: 15
+normal_end: S-a
+movement_increment: 10
+buttons: comma,period,slash,f,u,q,p
+scroll_down_key: A-f
+scroll_up_key: A-u
+scroll_right_key: A-p
+scroll_left_key: A-q
